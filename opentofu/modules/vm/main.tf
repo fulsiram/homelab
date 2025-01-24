@@ -14,7 +14,7 @@ resource "proxmox_virtual_environment_file" "metadata_cloud_config" {
   source_raw {
     data = <<-EOF
       #cloud-config
-      hostname: ${var.name}
+      local-hostname: ${var.name}
       fqdn: ${var.fqdn}
       prefer_fqdn_over_hostname: true
     EOF
