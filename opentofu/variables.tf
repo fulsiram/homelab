@@ -22,7 +22,6 @@ variable "proxmox_node_name" {
 variable "domain" {
   type        = string
   description = "The base domain for the VMs"
-  default     = "chorizo.salami.network"
 }
 
 variable "vm_datastore_id" {
