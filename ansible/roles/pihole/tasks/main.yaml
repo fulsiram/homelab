@@ -25,10 +25,17 @@
     state: directory
     mode: '0755'
 
-- name: Ensure docker is running
-  ansible.builtin.systemd_service:
-    name: docker
-    state: started
+- name: Create etc-pihole directory
+  ansible.builtin.file:
+    path: "{{ pihole_install_path }}/etc-pihole"
+    state: directory
+    mode: '0755'
+
+- name: Copy setupVars.conf
+  ansible.builtin.copy:
+    src: setupVars.conf
+    dest: "{{ pihole_install_path }}/etc-pihole/setupVars.conf"
+    mode: '0644'
 
 - name: Copy compose file
   ansible.builtin.template:
@@ -37,3 +44,8 @@
     mode: '0644'
   register: compose_file
   notify: restart docker compose
+
+- name: Ensure docker is running
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
