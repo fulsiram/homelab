@@ -1,0 +1,27 @@
+---
+plugin: community.general.proxmox
+url: https://10.88.111.128:8006
+user: machine@pve
+validate_certs: false
+
+token_id: ansible
+token_secret: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          32333561363931336430316661633433336236646633336533306561316135666434613764353637
+          3461616634386137353139623630356664363763666465340a626430393935396435656637323664
+          65653463343830323864343836363538306630373565386463333635346163346161666634363037
+          3962396632363837340a343364623565323131623666643562383861333236383464303961353863
+          32646361316539316564353531613663353862633862633338366430623264353066663735646561
+          3166356162323131646634373932316433613733386237393031
+
+want_facts: true
+want_proxmox_nodes_ansible_host: true
+
+# groups:
+#   webservers: "'web' in (proxmox_tags_parsed|list)"
+#   mailservers: "'mail' in (proxmox_tags_parsed|list)"
+
+compose:
+  ansible_host: proxmox_agent_interfaces[1]["ip-addresses"][0].split('/')[0]
+  ansible_ssh_user: "'admin'"
+  ansible_user: "'admin'"

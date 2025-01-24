@@ -1,0 +1,39 @@
+- name: Create systemd-resolved.conf.d directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Disable DNSStubListener
+  become: true
+  ansible.builtin.copy:
+    content: |
+      [Resolve]
+      DNSStubListener=no
+    dest: /etc/systemd/resolved.conf.d/10-disable-dnsstublistener.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart systemd-resolved
+
+- name: Create pihole directory
+  ansible.builtin.file:
+    path: "{{ pihole_install_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure docker is running
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+
+- name: Copy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ pihole_install_path }}/compose.yaml"
+    mode: '0644'
+  register: compose_file
+  notify: restart docker compose

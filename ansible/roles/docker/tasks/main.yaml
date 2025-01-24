@@ -1,0 +1,40 @@
+- name: Add docker GPG key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add docker repository
+  become: true
+  apt_repository:
+    repo: deb https://download.docker.com/linux/debian bookworm stable
+    state: present
+
+- name: Install docker
+  become: true
+  apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+
+- name: Start and enable docker service
+  become: true
+  ansible.builtin.systemd_service:
+    enabled: true
+    state: started
+    name: docker
+
+- name: Add user to docker group
+  become: true
+  user:
+    name: '{{ ansible_user }}'
+    append: true
+    groups: docker
+  notify: reset connection
+
+- name: Flush handlers
+  meta: flush_handlers

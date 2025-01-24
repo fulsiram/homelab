@@ -1,0 +1,6 @@
+- name: Configure pihole instance
+  hosts: pihole
+  roles:
+    - common
+    - docker
+    - pihole
