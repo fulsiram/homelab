@@ -19,6 +19,12 @@ variable "proxmox_node_name" {
   description = "The name of the node to create resources on"
 }
 
+variable "domain" {
+  type        = string
+  description = "The base domain for the VMs"
+  default     = "chorizo.salami.network"
+}
+
 variable "vm_datastore_id" {
   type        = string
   description = "The ID of the datastore to store VM data in"

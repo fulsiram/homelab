@@ -104,3 +104,11 @@ resource "proxmox_virtual_environment_vm" "debian_12_template" {
     mac_address = ""
   }
 }
+
+output "user_data_cloud_config_id" {
+  value = proxmox_virtual_environment_file.user_data_cloud_config.id
+}
+
+output "debian_12_template_id" {
+  value = proxmox_virtual_environment_vm.debian_12_template.id
+}
