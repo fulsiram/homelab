@@ -44,7 +44,7 @@ resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
   }
 }
 
-resource "proxmox_virtual_environment_vm" "debian_12_vm" {
+resource "proxmox_virtual_environment_vm" "vm" {
   name      = var.name
   node_name = var.proxmox_node_name
 
@@ -104,5 +104,5 @@ resource "proxmox_virtual_environment_vm" "debian_12_vm" {
 }
 
 output "ip_address" {
-  value = proxmox_virtual_environment_vm.debian_12_vm.ipv4_addresses[1][0]
+  value = proxmox_virtual_environment_vm.vm.ipv4_addresses[1][0]
 }
