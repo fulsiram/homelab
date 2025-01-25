@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    ports:
+      - 5443:5443/udp
+      - 5443:5443/tcp
+      - 8853:8853/udp
+      - 853:853/udp
+      - 784:784/udp
+      - 853:853/tcp
+      - 3000:3000/tcp
+      - 443:443/udp
+      - 443:443/tcp
+      - 80:80/tcp
+      - 53:53/udp
+      - 53:53/tcp
+    volumes:
+      - ./confdir:/opt/adguardhome/conf
+      - ./workdir:/opt/adguardhome/work
+    restart: unless-stopped
+    container_name: adguardhome

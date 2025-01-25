@@ -1,0 +1,55 @@
+- name: Create systemd-resolved.conf.d directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Disable DNSStubListener
+  become: true
+  ansible.builtin.copy:
+    content: |
+      [Resolve]
+      DNSStubListener=no
+    dest: /etc/systemd/resolved.conf.d/10-disable-dnsstublistener.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart systemd-resolved
+
+- name: Ensure docker is running
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+
+- name: Create adguard directory
+  ansible.builtin.file:
+    path: "{{ adguard_install_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Create adguard config directory
+  ansible.builtin.file:
+    path: "{{ adguard_install_path }}/confdir"
+    state: directory
+    mode: '0755'
+
+- name: Copy AdGuard config
+  ansible.builtin.template:
+    src: AdGuardHome.yaml.j2
+    dest: "{{ adguard_install_path }}/confdir/AdGuardHome.yaml"
+    mode: '0600'
+    owner: root
+    group: root
+  become: true
+  notify: restart docker compose
+
+- name: Copy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ adguard_install_path }}/compose.yaml"
+    mode: '0644'
+  register: compose_file
+  notify: restart docker compose

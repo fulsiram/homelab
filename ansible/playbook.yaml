@@ -1,9 +1,12 @@
-- name: Configure pihole instance
-  hosts: pihole
+- name: Configure adguard instance
+  hosts: adguard
   roles:
     - common
     - docker
-    - pihole
+    # - pihole
+    - adguard
+  tags:
+    - adguard
 
 - name: Configure vault instance
   hosts: vault
