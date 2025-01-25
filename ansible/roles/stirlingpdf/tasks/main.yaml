@@ -15,3 +15,13 @@
     dest: "{{ stirlingpdf_install_path }}/compose.yaml"
     mode: "0644"
   notify: restart docker compose
+
+- name: Copy tessdata
+  become: true
+  ansible.builtin.copy:
+    src: "tessdata/{{ item }}"
+    dest: "{{ stirlingpdf_install_path }}/StirlingPDF/trainingData"
+    mode: "0644"
+  loop:
+    - rus.traineddata
+    - ukr.traineddata
