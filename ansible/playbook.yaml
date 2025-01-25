@@ -4,3 +4,10 @@
     - common
     - docker
     - pihole
+
+- name: Configure vault instance
+  hosts: vault
+  roles:
+    - common
+    - docker
+    - stirlingpdf

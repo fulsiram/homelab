@@ -37,6 +37,11 @@
     dest: "{{ pihole_install_path }}/etc-pihole/setupVars.conf"
     mode: '0644'
 
+- name: Ensure docker is running
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+
 - name: Copy compose file
   ansible.builtin.template:
     src: compose.yaml.j2
@@ -45,7 +50,3 @@
   register: compose_file
   notify: restart docker compose
 
-- name: Ensure docker is running
-  ansible.builtin.systemd_service:
-    name: docker
-    state: started

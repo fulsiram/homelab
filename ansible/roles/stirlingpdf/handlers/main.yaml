@@ -1,0 +1,9 @@
+- name: Restart docker compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ stirlingpdf_install_path }}"
+    state: present
+    remove_orphans: true
+    wait: true
+    wait_timeout: 300
+    recreate: always
+  listen: restart docker compose

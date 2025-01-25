@@ -1,0 +1,17 @@
+- name: Create stirlingpdf directory
+  ansible.builtin.file:
+    path: "{{ stirlingpdf_install_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure docker is running
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+
+- name: Copy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ stirlingpdf_install_path }}/compose.yaml"
+    mode: "0644"
+  notify: restart docker compose
