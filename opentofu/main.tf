@@ -39,7 +39,7 @@ module "pihole" {
   network_mac_address = "BC:24:11:16:6B:33"
   cpu_cores           = 2
   memory_mb           = 4096
-  disk_size_gb        = 20
+  disk_size_gb        = 10
   ssh_public_key      = data.local_file.ssh_public_key.content
 }
 
@@ -55,6 +55,21 @@ module "vault" {
   cpu_cores           = 2
   memory_mb           = 4096
   disk_size_gb        = 20
+  ssh_public_key      = data.local_file.ssh_public_key.content
+}
+
+module "edge" {
+  source = "./modules/complete_vm"
+
+  image_file_id       = module.pve_templates.debian_12_disk_id
+  vm_datastore_id     = var.vm_datastore_id
+  proxmox_node_name   = var.proxmox_node_name
+
+  name                = "edge"
+  fqdn                = "edge.${var.domain}"
+  cpu_cores           = 2
+  memory_mb           = 4096
+  disk_size_gb        = 10
   ssh_public_key      = data.local_file.ssh_public_key.content
 }
 
