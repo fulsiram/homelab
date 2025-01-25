@@ -41,6 +41,12 @@ variable "memory_mb" {
   default     = 4096
 }
 
+variable "disk_size_gb" {
+  type        = number
+  description = "The size of the disk to use for the VM"
+  default     = 10
+}
+
 variable "network_bridge" {
   type        = string
   description = "The bridge to use for the VM"

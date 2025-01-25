@@ -29,6 +29,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   tags = []
 
+  agent {
+    enabled = true
+  }
   cpu {
     type  = var.cpu_type
     cores = var.cpu_cores
@@ -51,4 +54,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
   clone {
     vm_id = var.base_vm_id
   }
+}
+
+output "ip_address" {
+  value = proxmox_virtual_environment_vm.vm.ipv4_addresses[1][0]
 }
