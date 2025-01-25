@@ -1,5 +1,8 @@
 *.private.salami.network {
   tls /etc/ssl/caddy/fullchain.pem /etc/ssl/caddy/privkey.pem
 
-  respond "Hello, World!"
+  @stirlingpdf host stirlingpdf.private.salami.network
+  handle @stirlingpdf {
+    reverse_proxy 10.88.111.11:8080
+  }
 }
