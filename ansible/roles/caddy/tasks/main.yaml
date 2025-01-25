@@ -1,0 +1,56 @@
+- name: Add caddy GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+    state: present
+
+- name: Add caddy repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main
+    state: present
+
+- name: Install caddy
+  become: true
+  ansible.builtin.apt:
+    pkg: caddy
+    state: latest
+
+- name: Enable and start caddy service
+  become: true
+  ansible.builtin.systemd_service:
+    enabled: true
+    state: started
+    name: caddy
+
+- name: Create ssl directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/ssl/caddy/
+    state: directory
+    mode: '0750'
+    owner: caddy
+    group: caddy
+
+- name: Copy SSL certificates
+  become: true
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: /etc/ssl/caddy/
+    mode: '0660'
+    owner: caddy
+    group: caddy
+  loop:
+    - fullchain.pem
+    - privkey.pem
+  notify: restart caddy
+
+- name: Copy Caddyfile
+  become: true
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    mode: "0644"
+  notify: restart caddy
+  tags:
+    - caddyfile

@@ -11,3 +11,11 @@
     - common
     - docker
     - stirlingpdf
+
+- name: Configure edge instance
+  hosts: edge
+  roles:
+    - common
+    - caddy
+  tags:
+    - caddy

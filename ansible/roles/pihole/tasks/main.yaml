@@ -30,12 +30,14 @@
     path: "{{ pihole_install_path }}/etc-pihole"
     state: directory
     mode: '0755'
+  ignore_errors: true
 
 - name: Copy setupVars.conf
   ansible.builtin.copy:
     src: setupVars.conf
     dest: "{{ pihole_install_path }}/etc-pihole/setupVars.conf"
     mode: '0644'
+  # notify: restart docker compose
 
 - name: Ensure docker is running
   ansible.builtin.systemd_service:
@@ -49,4 +51,3 @@
     mode: '0644'
   register: compose_file
   notify: restart docker compose
-
