@@ -34,6 +34,12 @@ variable "fqdn" {
   description = "The FQDN to use for the VM"
 }
 
+variable "runcmd" {
+  type        = list(string)
+  description = "The commands to run in cloud-init"
+  default     = []
+}
+
 variable "network_mac_address" {
   type        = string
   description = "The MAC address to use for the VM's network interface"

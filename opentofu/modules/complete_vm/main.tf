@@ -33,14 +33,24 @@ resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
           eth0:
             dhcp4: true
 
-      runcmd:
-        - apt update
-        - apt install -y qemu-guest-agent net-tools
-        - systemctl enable qemu-guest-agent
-        - systemctl start qemu-guest-agent
+      ${yamlencode({
+        runcmd = concat([
+          "apt update",
+          "apt install -y qemu-guest-agent net-tools",
+        ], var.runcmd, [
+          "systemctl enable qemu-guest-agent",
+          "systemctl start qemu-guest-agent"
+        ])
+      })}
     EOF
 
     file_name = "${var.name}-user-data-cloud-config.yaml"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      source_raw[0].data
+    ]
   }
 }
 
