@@ -3,6 +3,9 @@ terraform {
     proxmox = {
       source = "bpg/proxmox"
     }
+    postgresql = {
+      source = "cyrilgdn/postgresql"
+    }
   }
 }
 
@@ -25,6 +28,32 @@ module "pve_templates" {
   image_datastore_id = var.image_datastore_id
   ssh_public_key     = data.local_file.ssh_public_key.content
   timezone           = var.timezone
+}
+
+
+module "postgresql_cluster" {
+  source = "./modules/postgresql_cluster"
+
+  proxmox_node_name = var.proxmox_node_name
+  image_file_id = module.pve_templates.debian_12_disk_id
+
+  cluster_name = "postgresql"
+  domain = var.domain
+  ssh_public_key = data.local_file.ssh_public_key.content
+
+  primary = {
+    cpu_cores = 2
+    memory_mb = 4096
+    disk_size_gb = 20
+    datastore_id = var.vm_datastore_id
+  }
+}
+
+provider "postgresql" {
+  host = module.postgresql_cluster.primary_ip
+  port = 5432
+  username = "terraform"
+  password = module.postgresql_cluster.terraform_password
 }
 
 module "adguard" {
@@ -72,6 +101,7 @@ module "edge" {
   disk_size_gb        = 10
   ssh_public_key      = data.local_file.ssh_public_key.content
 }
+
 
 output "adguard_ip" {
   value = module.adguard.ip_address

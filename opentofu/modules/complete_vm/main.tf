@@ -37,8 +37,8 @@ resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
         runcmd = concat([
           "apt update",
           "apt install -y qemu-guest-agent net-tools",
-        ], var.runcmd, [
           "systemctl enable qemu-guest-agent",
+        ], var.runcmd, [
           "systemctl start qemu-guest-agent"
         ])
       })}
