@@ -34,24 +34,24 @@ resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
             dhcp4: true
 
       ${yamlencode({
-        runcmd = concat([
-          "apt update",
-          "apt install -y qemu-guest-agent net-tools",
-          "systemctl enable qemu-guest-agent",
-        ], var.runcmd, [
-          "systemctl start qemu-guest-agent"
-        ])
-      })}
+    runcmd = concat([
+      "apt update",
+      "apt install -y qemu-guest-agent net-tools",
+      "systemctl enable qemu-guest-agent",
+      ], var.runcmd, [
+      "systemctl start qemu-guest-agent"
+    ])
+})}
     EOF
 
-    file_name = "${var.name}-user-data-cloud-config.yaml"
-  }
+file_name = "${var.name}-user-data-cloud-config.yaml"
+}
 
-  lifecycle {
-    ignore_changes = [
-      source_raw[0].data
-    ]
-  }
+lifecycle {
+  ignore_changes = [
+    source_raw[0].data
+  ]
+}
 }
 
 resource "proxmox_virtual_environment_vm" "vm" {
@@ -101,7 +101,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
       }
     }
 
-    datastore_id = var.vm_datastore_id
+    datastore_id      = var.vm_datastore_id
     user_data_file_id = proxmox_virtual_environment_file.user_data_cloud_config.id
   }
 

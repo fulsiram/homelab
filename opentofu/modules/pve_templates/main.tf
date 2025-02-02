@@ -8,7 +8,7 @@ terraform {
 
 resource "proxmox_virtual_environment_download_file" "debian_12_disk" {
   url          = "http://cdimage.debian.org/images/cloud/bookworm/20250115-1993/debian-12-generic-amd64-20250115-1993.qcow2"
-  verify = false
+  verify       = false
   datastore_id = var.image_datastore_id
   node_name    = var.proxmox_node_name
   content_type = "iso"

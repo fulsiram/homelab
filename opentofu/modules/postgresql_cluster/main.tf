@@ -13,15 +13,15 @@ resource "random_password" "terraform_password" {
 module "primary" {
   source = "../complete_vm"
 
-  vm_datastore_id = var.primary.datastore_id
+  vm_datastore_id   = var.primary.datastore_id
   proxmox_node_name = var.proxmox_node_name
-  image_file_id = var.image_file_id
+  image_file_id     = var.image_file_id
 
   name = "${var.cluster_name}-primary"
   fqdn = "${var.cluster_name}-primary.${var.domain}"
 
-  cpu_cores = var.primary.cpu_cores
-  memory_mb = var.primary.memory_mb
+  cpu_cores    = var.primary.cpu_cores
+  memory_mb    = var.primary.memory_mb
   disk_size_gb = var.primary.disk_size_gb
 
   ssh_public_key = var.ssh_public_key

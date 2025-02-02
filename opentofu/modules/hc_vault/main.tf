@@ -4,14 +4,14 @@ module "vm" {
   source = "../complete_vm"
 
   proxmox_node_name = var.proxmox_node_name
-  vm_datastore_id = var.vm_datastore_id
-  image_file_id = var.image_file_id
+  vm_datastore_id   = var.vm_datastore_id
+  image_file_id     = var.image_file_id
 
   name = "openbao"
   fqdn = "openbao.${var.domain}"
 
-  cpu_cores = 2
-  memory_mb = 4096
+  cpu_cores    = 2
+  memory_mb    = 4096
   disk_size_gb = 20
 
   ssh_public_key = var.ssh_public_key
