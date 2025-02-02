@@ -35,23 +35,37 @@ module "postgresql_cluster" {
   source = "./modules/postgresql_cluster"
 
   proxmox_node_name = var.proxmox_node_name
-  image_file_id = module.pve_templates.debian_12_disk_id
+  image_file_id     = module.pve_templates.debian_12_disk_id
 
-  cluster_name = "postgresql"
-  domain = var.domain
+  cluster_name   = "postgresql"
+  domain         = var.domain
   ssh_public_key = data.local_file.ssh_public_key.content
 
   primary = {
-    cpu_cores = 2
-    memory_mb = 4096
+    cpu_cores    = 2
+    memory_mb    = 4096
     disk_size_gb = 20
     datastore_id = var.vm_datastore_id
   }
+
+  replicas = [
+    {
+      cpu_cores    = 2
+      memory_mb    = 4096
+      disk_size_gb = 20
+      datastore_id = "local-lvm"
+      }, {
+      cpu_cores    = 2
+      memory_mb    = 4096
+      disk_size_gb = 20
+      datastore_id = "vmdata-images"
+    }
+  ]
 }
 
 provider "postgresql" {
-  host = module.postgresql_cluster.primary_ip
-  port = 5432
+  host     = module.postgresql_cluster.primary_ip
+  port     = 5432
   username = "terraform"
   password = module.postgresql_cluster.terraform_password
 }
@@ -59,9 +73,9 @@ provider "postgresql" {
 module "adguard" {
   source = "./modules/complete_vm"
 
-  image_file_id       = module.pve_templates.debian_12_disk_id
-  vm_datastore_id     = var.vm_datastore_id
-  proxmox_node_name   = var.proxmox_node_name
+  image_file_id     = module.pve_templates.debian_12_disk_id
+  vm_datastore_id   = var.vm_datastore_id
+  proxmox_node_name = var.proxmox_node_name
 
   name                = "adguard"
   fqdn                = "adguard.${var.domain}"
@@ -75,31 +89,31 @@ module "adguard" {
 module "vault" {
   source = "./modules/complete_vm"
 
-  image_file_id       = module.pve_templates.debian_12_disk_id
-  vm_datastore_id     = var.vm_datastore_id
-  proxmox_node_name   = var.proxmox_node_name
+  image_file_id     = module.pve_templates.debian_12_disk_id
+  vm_datastore_id   = var.vm_datastore_id
+  proxmox_node_name = var.proxmox_node_name
 
-  name                = "vault"
-  fqdn                = "vault.${var.domain}"
-  cpu_cores           = 2
-  memory_mb           = 4096
-  disk_size_gb        = 20
-  ssh_public_key      = data.local_file.ssh_public_key.content
+  name           = "vault"
+  fqdn           = "vault.${var.domain}"
+  cpu_cores      = 2
+  memory_mb      = 4096
+  disk_size_gb   = 20
+  ssh_public_key = data.local_file.ssh_public_key.content
 }
 
 module "edge" {
   source = "./modules/complete_vm"
 
-  image_file_id       = module.pve_templates.debian_12_disk_id
-  vm_datastore_id     = var.vm_datastore_id
-  proxmox_node_name   = var.proxmox_node_name
+  image_file_id     = module.pve_templates.debian_12_disk_id
+  vm_datastore_id   = var.vm_datastore_id
+  proxmox_node_name = var.proxmox_node_name
 
-  name                = "edge"
-  fqdn                = "edge.${var.domain}"
-  cpu_cores           = 2
-  memory_mb           = 4096
-  disk_size_gb        = 10
-  ssh_public_key      = data.local_file.ssh_public_key.content
+  name           = "edge"
+  fqdn           = "edge.${var.domain}"
+  cpu_cores      = 2
+  memory_mb      = 4096
+  disk_size_gb   = 10
+  ssh_public_key = data.local_file.ssh_public_key.content
 }
 
 
