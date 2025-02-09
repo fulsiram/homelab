@@ -4,6 +4,5 @@
     state: present
     remove_orphans: true
     wait: true
-    wait_timeout: 300
     recreate: always
   listen: restart docker compose

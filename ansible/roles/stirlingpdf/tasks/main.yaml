@@ -16,6 +16,12 @@
     mode: "0644"
   notify: restart docker compose
 
+- name: Create trainingData directory
+  ansible.builtin.file:
+    path: "{{ stirlingpdf_install_path }}/StirlingPDF/trainingData"
+    state: directory
+    mode: '0755'
+
 - name: Copy tessdata
   become: true
   ansible.builtin.copy:
@@ -25,3 +31,9 @@
   loop:
     - rus.traineddata
     - ukr.traineddata
+
+- name: Ensure docker compose is running
+  community.docker.docker_compose_v2:
+    project_src: "{{ stirlingpdf_install_path }}"
+    state: present
+    recreate: auto
