@@ -39,6 +39,7 @@ module "primary" {
   cpu_cores    = var.primary.cpu_cores
   memory_mb    = var.primary.memory_mb
   disk_size_gb = var.primary.disk_size_gb
+  network_mac_address = var.primary.mac_address
 
   ssh_public_key = var.ssh_public_key
 

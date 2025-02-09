@@ -29,6 +29,7 @@ variable "primary" {
     memory_mb    = number
     disk_size_gb = number
     datastore_id = string
+    mac_address = string
   })
   description = "The primary node configuration"
 }

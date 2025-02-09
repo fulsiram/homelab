@@ -15,8 +15,8 @@ terraform {
 }
 
 provider "vault" {
-  address = var.vault_address
-  token   = var.vault_token
+  address         = var.vault_address
+  token           = var.vault_token
   skip_tls_verify = var.vault_insecure
 }
 
@@ -71,11 +71,12 @@ module "postgresql_cluster" {
     memory_mb    = 4096
     disk_size_gb = 20
     datastore_id = var.vm_datastore_id
+    mac_address  = "bc:24:11:3d:a7:60"
   }
 }
 
 provider "postgresql" {
-  host     = module.postgresql_cluster.primary_ip
+  host     = "10.88.111.18"
   port     = 5432
   username = "terraform"
   password = module.postgresql_cluster.terraform_password
@@ -128,23 +129,23 @@ module "edge" {
 }
 
 module "authentik" {
-  source = "./modules/complete_vm"
+  source     = "./modules/authentik"
+  depends_on = [module.postgresql_cluster]
 
-  image_file_id     = module.pve_templates.debian_12_disk_id
-  vm_datastore_id   = var.vm_datastore_id
+  vault_mount       = vault_mount.kvv2.path
+  domain            = var.domain
   proxmox_node_name = var.proxmox_node_name
-
-  name           = "auth"
-  fqdn           = "auth.${var.domain}"
-  cpu_cores      = 2
-  memory_mb      = 4096
-  disk_size_gb   = 10
-  ssh_public_key = data.local_file.ssh_public_key.content
+  datastore_id      = var.vm_datastore_id
+  ssh_public_key    = data.local_file.ssh_public_key.content
+  image_file_id     = module.pve_templates.debian_12_disk_id
 }
-
 
 output "adguard_ip" {
   value = module.adguard.ip_address
+}
+
+output "postgres_ip" {
+  value = module.postgresql_cluster.primary_ip
 }
 
 output "vault_ip" {
