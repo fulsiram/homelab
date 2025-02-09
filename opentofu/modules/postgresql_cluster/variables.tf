@@ -42,3 +42,8 @@ variable "primary" {
 #   }))
 #   description = "The replica nodes configuration"
 # }
+
+variable "vault_mount" {
+  type        = string
+  description = "The Vault mount to use for the PostgreSQL cluster"
+}

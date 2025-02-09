@@ -49,3 +49,20 @@ variable "timezone" {
   description = "The timezone to use for the VM"
   default     = "America/Toronto"
 }
+
+variable "vault_token" {
+  type        = string
+  description = "The Hashicorp Vault token"
+  sensitive   = true
+}
+
+variable "vault_address" {
+  type        = string
+  description = "The Hashicorp Vault address"
+}
+
+variable "vault_insecure" {
+  type        = bool
+  description = "Whether to skip TLS verification of the Vault API"
+  default     = false
+}

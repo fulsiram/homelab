@@ -3,10 +3,33 @@ terraform {
     proxmox = {
       source = "bpg/proxmox"
     }
+
     postgresql = {
       source = "cyrilgdn/postgresql"
     }
+
+    vault = {
+      source = "hashicorp/vault"
+    }
   }
+}
+
+provider "vault" {
+  address = var.vault_address
+  token   = var.vault_token
+  skip_tls_verify = var.vault_insecure
+}
+
+import {
+  to = vault_mount.kvv2
+  id = "kv"
+}
+
+resource "vault_mount" "kvv2" {
+  path        = "kv"
+  type        = "kv"
+  options     = { version = "2" }
+  description = "KV Version 2 secret engine mount"
 }
 
 provider "proxmox" {
@@ -34,6 +57,8 @@ module "pve_templates" {
 module "postgresql_cluster" {
   source = "./modules/postgresql_cluster"
 
+  vault_mount = vault_mount.kvv2.path
+
   proxmox_node_name = var.proxmox_node_name
   image_file_id     = module.pve_templates.debian_12_disk_id
 
@@ -47,20 +72,6 @@ module "postgresql_cluster" {
     disk_size_gb = 20
     datastore_id = var.vm_datastore_id
   }
-
-  replicas = [
-    {
-      cpu_cores    = 2
-      memory_mb    = 4096
-      disk_size_gb = 20
-      datastore_id = "local-lvm"
-      }, {
-      cpu_cores    = 2
-      memory_mb    = 4096
-      disk_size_gb = 20
-      datastore_id = "vmdata-images"
-    }
-  ]
 }
 
 provider "postgresql" {
@@ -110,6 +121,21 @@ module "edge" {
 
   name           = "edge"
   fqdn           = "edge.${var.domain}"
+  cpu_cores      = 2
+  memory_mb      = 4096
+  disk_size_gb   = 10
+  ssh_public_key = data.local_file.ssh_public_key.content
+}
+
+module "authentik" {
+  source = "./modules/complete_vm"
+
+  image_file_id     = module.pve_templates.debian_12_disk_id
+  vm_datastore_id   = var.vm_datastore_id
+  proxmox_node_name = var.proxmox_node_name
+
+  name           = "auth"
+  fqdn           = "auth.${var.domain}"
   cpu_cores      = 2
   memory_mb      = 4096
   disk_size_gb   = 10

@@ -10,6 +10,22 @@ resource "random_password" "terraform_password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
+resource "vault_kv_secret_v2" "postgres_password" {
+  mount = var.vault_mount
+  name  = "postgresql/postgres_password"
+  data_json = jsonencode({
+    password = random_password.postgres_password.result
+  })
+}
+
+resource "vault_kv_secret_v2" "terraform_password" {
+  mount = var.vault_mount
+  name  = "postgresql/terraform_password"
+  data_json = jsonencode({
+    password = random_password.terraform_password.result
+  })
+}
+
 module "primary" {
   source = "../complete_vm"
 
