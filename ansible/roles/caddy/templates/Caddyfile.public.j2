@@ -1,0 +1,14 @@
+*.salami.network {
+  tls /etc/ssl/caddy/fullchain.pem /etc/ssl/caddy/privkey.pem
+
+  @auth host auth.salami.network
+  handle @auth {
+    reverse_proxy {
+      to 10.88.111.15:9443
+      transport http {
+        tls
+        tls_insecure_skip_verify
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+- name: Create authentik directory
+  ansible.builtin.file:
+    path: "{{ authentik_install_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure docker is running
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+
+- name: Copy compose file
+  ansible.builtin.template:
+    src: compose.yaml.j2
+    dest: "{{ authentik_install_path }}/compose.yaml"
+    mode: "0644"
+  notify: restart docker compose
+
+- name: Copy env file
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ authentik_install_path }}/.env"
+    mode: "0644"
+  notify: restart docker compose
+
+- name: Ensure docker compose is running
+  community.docker.docker_compose_v2:
+    project_src: "{{ authentik_install_path }}"
+    state: present
+    recreate: auto

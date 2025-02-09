@@ -15,10 +15,31 @@
     - docker
     - stirlingpdf
 
-- name: Configure edge instance
+- name: Configure private edge
   hosts: edge
   roles:
     - common
     - caddy
+  vars:
+    type: private
   tags:
     - caddy
+
+- name: Configure public edge
+  hosts: public-edge
+  roles:
+    - common
+    - caddy
+  vars:
+    type: public
+  tags:
+    - caddy
+
+- name: Configure auth instance
+  hosts: auth
+  roles:
+    - common
+    - docker
+    - authentik
+  tags:
+    - authentik

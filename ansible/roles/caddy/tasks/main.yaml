@@ -48,7 +48,7 @@
 - name: Copy Caddyfile
   become: true
   ansible.builtin.template:
-    src: Caddyfile.j2
+    src: Caddyfile.{{ type }}.j2
     dest: /etc/caddy/Caddyfile
     mode: "0644"
   notify: restart caddy
