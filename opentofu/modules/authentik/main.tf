@@ -11,14 +11,14 @@ terraform {
 }
 
 resource "random_password" "db_password" {
-  length  = 32
-  special = true
+  length           = 32
+  special          = true
   override_special = ".!$%&*()-_+[]{}<>:;?@"
 }
 
 resource "random_password" "secret_key" {
-  length  = 64
-  special = true
+  length           = 64
+  special          = true
   override_special = ".!$%&*()-_+[]{}<>:;?@"
 }
 
@@ -47,7 +47,7 @@ resource "postgresql_role" "authentik" {
 }
 
 resource "postgresql_database" "authentik" {
-  name = "authentik"
+  name  = "authentik"
   owner = postgresql_role.authentik.name
 }
 
@@ -61,8 +61,8 @@ module "vm" {
   name = "auth"
   fqdn = "auth.${var.domain}"
 
-  cpu_cores    = 2
-  memory_mb    = 4096
+  cpu_cores = 2
+  memory_mb = 4096
 
   ssh_public_key = var.ssh_public_key
 

@@ -42,7 +42,7 @@ resource "vault_kv_secret_v2" "primary_host" {
   mount = var.vault_mount
   name  = "postgresql/primary/host"
   data_json = jsonencode({
-    host     = module.primary.ip_address
+    host = module.primary.ip_address
   })
 }
 
@@ -56,9 +56,9 @@ module "primary" {
   name = "${var.cluster_name}-primary"
   fqdn = "${var.cluster_name}-primary.${var.domain}"
 
-  cpu_cores    = var.primary.cpu_cores
-  memory_mb    = var.primary.memory_mb
-  disk_size_gb = var.primary.disk_size_gb
+  cpu_cores           = var.primary.cpu_cores
+  memory_mb           = var.primary.memory_mb
+  disk_size_gb        = var.primary.disk_size_gb
   network_mac_address = var.primary.mac_address
 
   ssh_public_key = var.ssh_public_key
@@ -99,8 +99,8 @@ module "primary" {
 }
 
 resource "random_password" "replicator_password" {
-  length           = 64
-  special          = false
+  length  = 64
+  special = false
 }
 
 resource "vault_kv_secret_v2" "replicator_password" {
@@ -112,14 +112,14 @@ resource "vault_kv_secret_v2" "replicator_password" {
 }
 
 resource "postgresql_role" "replicator" {
-  name     = "replicator"
-  login    = true
-  password = random_password.replicator_password.result
+  name        = "replicator"
+  login       = true
+  password    = random_password.replicator_password.result
   replication = true
 }
 
 module "replica" {
-  source = "../complete_vm"
+  source   = "../complete_vm"
   for_each = var.replicas
 
   vm_datastore_id   = each.value.datastore_id
@@ -129,9 +129,9 @@ module "replica" {
   name = "${var.cluster_name}-${each.key}"
   fqdn = "${var.cluster_name}-${each.key}.${var.domain}"
 
-  cpu_cores    = each.value.cpu_cores
-  memory_mb    = each.value.memory_mb
-  disk_size_gb = each.value.disk_size_gb
+  cpu_cores           = each.value.cpu_cores
+  memory_mb           = each.value.memory_mb
+  disk_size_gb        = each.value.disk_size_gb
   network_mac_address = each.value.mac_address
 
   ssh_public_key = var.ssh_public_key

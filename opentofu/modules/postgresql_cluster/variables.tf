@@ -29,19 +29,19 @@ variable "primary" {
     memory_mb    = number
     disk_size_gb = number
     datastore_id = string
-    mac_address = string
+    mac_address  = string
   })
   description = "The primary node configuration"
 }
 
 variable "replicas" {
   type = map(object({
-    cpu_cores = number
-    memory_mb = number
-    disk_size_gb = number
-    datastore_id = string
+    cpu_cores         = number
+    memory_mb         = number
+    disk_size_gb      = number
+    datastore_id      = string
     proxmox_node_name = string
-    mac_address = string
+    mac_address       = string
   }))
   description = "The replica nodes configuration"
 
