@@ -76,29 +76,29 @@ module "postgresql_cluster" {
 
   replicas = {
     "replica-1" = {
-      cpu_cores = 2
-      memory_mb = 4096
-      disk_size_gb = 20
-      datastore_id = var.vm_datastore_id
+      cpu_cores         = 2
+      memory_mb         = 4096
+      disk_size_gb      = 20
+      datastore_id      = var.vm_datastore_id
       proxmox_node_name = var.proxmox_node_name
-      mac_address = "bc:24:11:3d:a7:61"
+      mac_address       = "bc:24:11:3d:a7:61"
     },
     "replica-2" = {
-      cpu_cores = 2
-      memory_mb = 4096
-      disk_size_gb = 20
-      datastore_id = "local"
+      cpu_cores         = 2
+      memory_mb         = 4096
+      disk_size_gb      = 20
+      datastore_id      = "local"
       proxmox_node_name = var.proxmox_node_name
-      mac_address = "bc:24:11:3d:a7:62"
+      mac_address       = "bc:24:11:3d:a7:62"
     }
   }
 }
 
 provider "postgresql" {
-  host     = "10.88.111.18"
-  port     = 5432
-  username = "terraform"
-  password = module.postgresql_cluster.terraform_password
+  host      = "10.88.111.18"
+  port      = 5432
+  username  = "terraform"
+  password  = module.postgresql_cluster.terraform_password
   superuser = true
 }
 
@@ -119,18 +119,14 @@ module "adguard" {
 }
 
 module "vault" {
-  source = "./modules/complete_vm"
+  source = "./modules/vault"
 
-  image_file_id     = module.pve_templates.debian_12_disk_id
-  vm_datastore_id   = var.vm_datastore_id
+  vault_mount       = vault_mount.kvv2.path
+  domain            = var.domain
   proxmox_node_name = var.proxmox_node_name
-
-  name           = "vault"
-  fqdn           = "vault.${var.domain}"
-  cpu_cores      = 2
-  memory_mb      = 4096
-  disk_size_gb   = 20
-  ssh_public_key = data.local_file.ssh_public_key.content
+  datastore_id      = var.vm_datastore_id
+  ssh_public_key    = data.local_file.ssh_public_key.content
+  image_file_id     = module.pve_templates.debian_12_disk_id
 }
 
 module "edge" {
