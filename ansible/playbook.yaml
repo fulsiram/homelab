@@ -30,7 +30,7 @@
     postgresql_role: primary
   tags:
     - postgresql
-    - postgresql-primary
+    - postgresql-replica
 
 - name: Configure postgres replicas
   hosts: postgres-replica-*
