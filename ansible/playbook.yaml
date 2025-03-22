@@ -8,12 +8,18 @@
   tags:
     - adguard
 
-- name: Configure vault instance
+# - name: Configure vault instance
+#   hosts: vault
+#   roles:
+#     - common
+#     - docker
+#     - stirlingpdf
+
+- name: Configure HashiCorp Vault
   hosts: vault
   roles:
     - common
-    - docker
-    - stirlingpdf
+    - vault
 
 - name: Configure private edge
   hosts: edge
