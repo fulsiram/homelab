@@ -15,6 +15,7 @@
       - gnupg
       - ca-certificates
       - curl
+      - acl
     state: latest
     lock_timeout: 600
   become: true
