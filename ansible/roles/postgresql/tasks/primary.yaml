@@ -17,10 +17,14 @@
     source: 10.88.111.0/24
   become: true
 
+- name: Debug password
+  debug:
+    msg: "{{ lookup('community.hashi_vault.hashi_vault', 'kv/data/core/postgres/credentials/replicator:password') }}"
+
 - name: Create replicator user
   community.postgresql.postgresql_user:
     name: replicator
-    password: lookup('community.hashi_vault.hashi_vault', 'kv/data/credentials/replicator:password')
+    password: "{{ lookup('community.hashi_vault.hashi_vault', 'kv/data/core/postgres/credentials/replicator:password') }}"
     role_attr_flags: REPLICATION
   become: true
   become_user: postgres
@@ -38,7 +42,14 @@
 - name: Create terraform user
   community.postgresql.postgresql_user:
     name: terraform
-    password: lookup('community.hashi_vault.hashi_vault', 'kv/data/credentials/terraform:password')
+    password: "{{ lookup('community.hashi_vault.hashi_vault', 'kv/data/core/postgres/credentials/terraform:password') }}"
     role_attr_flags: SUPERUSER
   become: true
   become_user: postgres
+
+- name: Restart postgresql
+  become: true
+  ansible.builtin.systemd_service:
+    enabled: true
+    state: restarted
+    name: postgresql@16-main

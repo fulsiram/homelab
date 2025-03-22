@@ -30,6 +30,18 @@
     postgresql_role: primary
   tags:
     - postgresql
+    - postgresql-primary
+
+- name: Configure postgres replicas
+  hosts: postgres-replica-*
+  roles:
+    - common
+    - postgresql
+  vars:
+    postgresql_role: replica
+  tags:
+    - postgresql
+    - postgresql-replica
 
 - name: Configure private edge
   hosts: edge

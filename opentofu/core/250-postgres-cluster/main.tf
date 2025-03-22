@@ -118,6 +118,15 @@ module "replica-2" {
   ssh_public_key = data.local_file.ssh_public_key.content
 }
 
+resource "vault_kv_secret_v2" "primary_host" {
+  mount = data.terraform_remote_state.vault_engines.outputs.kvv2_path
+  name  = "${data.terraform_remote_state.vault_engines.outputs.base_core_path}/postgres/primary"
+
+  data_json = jsonencode({
+    host = module.primary.ip_address
+  })
+}
+
 output "primary-ip" {
   value = module.primary.ip_address
 }
