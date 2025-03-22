@@ -21,6 +21,16 @@
     - common
     - vault
 
+- name: Configure postgres primary
+  hosts: postgres-primary
+  roles:
+    - common
+    - postgresql
+  vars:
+    postgresql_role: primary
+  tags:
+    - postgresql
+
 - name: Configure private edge
   hosts: edge
   roles:
